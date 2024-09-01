@@ -1,0 +1,33 @@
+type Mutation {
+  addBook(title: String!, author: String!, isbn: String!, image_url: String, description: String): Book!
+  rentBook(userId: ID!, bookId: ID!): Book!
+  returnBook(bookId: ID!): Book!
+  borrowBook(bookId: ID!): Book!
+
+}
+
+type Query {
+  books: [Book!]!
+  book(id: ID!): Book
+  availableBooks: [Book!]!
+  borrowedBooks: [Book!]!
+}
+
+type Book {
+  id: ID!
+  _id: ID!
+  title: String!
+  author: String!
+  isbn: String!
+  image_url: String
+  description: String
+  available: Boolean!
+  owner: User
+  borrower: User
+}
+type User {
+  id: ID!
+  username: String!
+  email: String!
+  books: [Book!]!
+}
