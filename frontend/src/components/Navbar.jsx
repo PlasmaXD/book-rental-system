@@ -14,9 +14,31 @@ const Navbar = () => {
           <Link as={RouterLink} to="/my-books" ml="4">
             <Button colorScheme="teal" variant="outline">My Books</Button>
           </Link>
+          <Link as={RouterLink} to="/available-books" ml="4">
+            <Button colorScheme="teal" variant="outline">Available Books</Button>
+          </Link>
+          <Link as={RouterLink} to="/borrowed-books" ml="4">
+            <Button colorScheme="teal" variant="outline">Borrowed Books</Button>
+          </Link>
+          {/* <Link as={RouterLink} to="/add-book" ml="4">
+            <Button colorScheme="teal" variant="outline">Add Book</Button>
+          </Link>
+          <Link as={RouterLink} to="/rent-book" ml="4">
+            <Button colorScheme="teal" variant="outline">Rent Book</Button>
+          </Link>
+            <Link as={RouterLink} to="/return-book" ml="4">
+            <Button colorScheme="teal" variant="outline">Return Book</Button>
+          </Link>
+          
+          */}
+          <Link as={RouterLink} to="/books" ml="4"> 
+            <Button colorScheme="teal" variant="outline">Book Search</Button>
+          </Link>
+        
           <Link as={RouterLink} to="/login" ml="4">
             <Button colorScheme="teal" variant="outline">Login</Button>
           </Link>
+        
         </Flex>
       </Flex>
     </Box>

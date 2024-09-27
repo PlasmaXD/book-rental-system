@@ -1,6 +1,6 @@
 module grpc-server
 
-go 1.22.5
+go 1.23
 
 require (
 	go.mongodb.org/mongo-driver v1.16.0
