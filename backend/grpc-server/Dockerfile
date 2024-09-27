@@ -3,6 +3,7 @@ FROM golang:1.23 AS build
 
 WORKDIR /app
 COPY . .
+COPY ../grpc-server/proto/book.proto /usr/src/grpc-server/proto/
 
 # 依存関係の解決とビルド
 RUN go mod tidy
