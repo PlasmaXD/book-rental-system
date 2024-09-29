@@ -76,23 +76,30 @@ func (s *server) ReturnBook(ctx context.Context, in *pb.ReturnBookRequest) (*pb.
 }
 
 func main() {
-	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI("mongodb://localhost:27017"))
+	// client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI("mongodb://localhost:27017"))
+	log.Println("Connecting to MongoDB...")
+	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI("mongodb://mongo:27017"))
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("MongoDB connection failed:", err)
 	}
 	if err := client.Ping(context.TODO(), readpref.Primary()); err != nil {
-		log.Fatal(err)
+		log.Fatal("MongoDB ping failed:", err)
 	}
+
+	log.Println("MongoDB connected successfully")
 
 	lis, err := net.Listen("tcp", ":50051")
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
 
+	log.Println("Starting gRPC server...")
+
 	s := grpc.NewServer()
 	pb.RegisterBookServiceServer(s, &server{db: client})
-	log.Printf("server listening at %v", lis.Addr())
+	log.Printf("gRPC server listening at %v", lis.Addr())
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}
+
 }

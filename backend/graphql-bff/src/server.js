@@ -12,10 +12,25 @@ require('dotenv').config();
 
 
 // MongoDB 接続
-mongoose.connect('mongodb://localhost:27017/book-rental', {
+// mongoose.connect('mongodb://localhost:27017/book-rental', {
+//   useNewUrlParser: true,
+//   useUnifiedTopology: true,
+// });
+
+
+// 環境変数 MONGO_URI から接続先を取得（デフォルトは "mongodb://mongo:27017/book_rental_system"）
+const mongoUri = process.env.MONGO_URI || 'mongodb://mongo:27017/book_rental_system';
+
+// MongoDBに接続
+mongoose.connect(mongoUri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-});
+})
+  .then(() => console.log('MongoDB connected...'))
+  .catch(err => console.log(err));
+
+
+
 
 const app = express();
 app.use(express.json());

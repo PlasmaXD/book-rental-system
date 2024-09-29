@@ -17,6 +17,11 @@ spec:
         image: gcr.io/cryptic-pipe-435706-n0/graphql-bff:latest
         ports:
         - containerPort: 4000
+        env:
+        - name: MONGO_URI  # 環境変数の設定
+          value: "mongodb://mongo:27017/book_rental_system"  # 環境変数の値を指定
+
+
 ---
 apiVersion: v1
 kind: Service

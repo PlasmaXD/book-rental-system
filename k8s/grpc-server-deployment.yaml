@@ -2,6 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: grpc-server
+  labels:
+    app: grpc-server
 spec:
   replicas: 1
   selector:
@@ -17,6 +19,27 @@ spec:
         image: gcr.io/cryptic-pipe-435706-n0/grpc-server:latest
         ports:
         - containerPort: 50051
+        env:
+        - name: MONGO_URI
+          value: "mongodb://mongo:27017"
+        readinessProbe:
+          tcpSocket:
+            port: 50051
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          tcpSocket:
+            port: 50051
+          initialDelaySeconds: 15
+          periodSeconds: 20
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        imagePullPolicy: Always
 ---
 apiVersion: v1
 kind: Service
