@@ -5,14 +5,11 @@
 1. **フロントエンド**:
    - **React**: ユーザーインターフェースを構築するためのJavaScriptライブラリ。
    - **Chakra UI**: UIコンポーネントライブラリを使用して、レスポンシブでスタイリッシュなデザインを実装。
-   - **Axios**: サーバーとの通信に使用するHTTPクライアント。GraphQLリクエストを送信するために使用。
 
 2. **バックエンド**:
-   - **Node.js**: サーバーサイドのJavaScript環境。
    - **Express**: Node.jsのWebアプリケーションフレームワーク。GraphQL APIを提供。
    - **GraphQL**: クライアントが必要なデータを要求し、特定の形式で返すためのAPIクエリ言語。
    - **MongoDB**: NoSQLデータベース。ユーザー情報や書籍情報の保存に使用。
-   - **Mongoose**: MongoDBとNode.jsアプリケーションを接続するためのオブジェクトデータモデリングライブラリ。
 
 3. **認証とセキュリティ**:
    - **JWT (JSON Web Token)**: ユーザーの認証と認可を行うためのトークンベースの認証方式。
@@ -32,7 +29,6 @@
 - **書籍返却**: 借りた書籍を返却することで、所有者に返すことができます。
 - **ユーザー認証**: JWTを使用して、ユーザーのログインと認証を行い、セキュアにアクセスを管理します。
 
-`Rent Book` 機能が動作しない問題を解決するためには、いくつかのポイントを確認し、修正する必要があります。主な原因はバックエンドやフロントエンドの実装にあります。以下のステップで確認と修正を行います。
 
 
 
@@ -44,23 +40,23 @@
 protoc --go_out=. --go-grpc_out=. proto/book.proto
 ```
 
-### すべてのサービスの再起動
+### 起動方法
 
-#### gRPC サーバーの再起動
+#### gRPC サーバー
 
 ```sh
 cd book-rental-system/backend/grpc-server
 go run server.go
 ```
 
-#### GraphQL サーバーの再起動
+#### GraphQL サーバー
 
 ```sh
 cd book-rental-system/backend/graphql-bff
 npm start
 ```
 
-#### React アプリケーションの再起動
+#### React アプリケーション
 
 ```sh
 cd book-rental-system/frontend
