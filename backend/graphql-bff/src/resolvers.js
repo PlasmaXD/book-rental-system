@@ -1,17 +1,4 @@
-const grpc = require('@grpc/grpc-js');
-const protoLoader = require('@grpc/proto-loader');
-const path = require('path');
-
-const packageDefinition = protoLoader.loadSync(path.join(__dirname, '../../grpc-server/proto/book.proto'), {
-  keepCase: true,
-  longs: String,
-  enums: String,
-  defaults: true,
-  oneofs: true,
-});
-
-const bookProto = grpc.loadPackageDefinition(packageDefinition).book;
-const client = new bookProto.BookService('localhost:50051', grpc.credentials.createInsecure());
+// src/resolvers.js
 const Book = require('../models/Book');
 const User = require('../models/User');
 
@@ -19,32 +6,50 @@ const resolvers = {
   
   Query: {
     
+    // gRPCクライアントを使用していた部分を削除し、Mongooseを使用
     books: async () => {
-      return new Promise((resolve, reject) => {
-        client.getBooks({}, (err, response) => {
-          if (err) reject(err);
-          else resolve(response.books);
-        });
-      });
+      try {
+        const books = await Book.find().populate('owner').populate('borrower');
+        return books;
+      } catch (error) {
+        console.error("Error fetching books:", error);
+        throw new Error('Failed to fetch books');
+      }
     },
     book: async (_, { id }) => {
-      return new Promise((resolve, reject) => {
-        client.getBook({ id }, (err, response) => {
-          if (err) reject(err);
-          else resolve(response.book);
-        });
-      });
+      try {
+        const book = await Book.findById(id).populate('owner').populate('borrower');
+        if (!book) {
+          throw new Error('Book not found');
+        }
+        return book;
+      } catch (error) {
+        console.error("Error fetching book:", error);
+        throw new Error('Failed to fetch book');
+      }
     },
     availableBooks: async (_, __, { user }) => {
       if (!user) throw new Error('Authentication required');
       
-      // 自分の本を除外し、借りられていない本のみを返す
-      return await Book.find({ available: true, owner: { $ne: user.id } }).populate('owner');
+      try {
+        // 自分の本を除外し、借りられていない本のみを返す
+        const books = await Book.find({ available: true, owner: { $ne: user.id } }).populate('owner');
+        return books;
+      } catch (error) {
+        console.error("Error fetching available books:", error);
+        throw new Error('Failed to fetch available books');
+      }
     },
     borrowedBooks: async (_, __, { user }) => {
       if (!user) throw new Error('Authentication required');
       
-      return await Book.find({ borrower: user.id }).populate('owner');
+      try {
+        const books = await Book.find({ borrower: user.id }).populate('owner');
+        return books;
+      } catch (error) {
+        console.error("Error fetching borrowed books:", error);
+        throw new Error('Failed to fetch borrowed books');
+      }
     },
   },
 
@@ -88,12 +93,18 @@ const resolvers = {
     },
     
     rentBook: async (_, { userId, bookId }) => {
-      const book = await Book.findById(bookId);
-      if (!book || !book.available) {
-        throw new Error('Book is not available');
+      try {
+        const book = await Book.findById(bookId);
+        if (!book || !book.available) {
+          throw new Error('Book is not available');
+        }
+        book.available = false;
+        await book.save();
+        return book;
+      } catch (error) {
+        console.error("Error in rentBook mutation:", error);
+        throw new Error(error.message);
       }
-      book.available = false;
-      return await book.save();
     },
     borrowBook: async (_, { bookId }, { user }) => {
       try {
@@ -125,7 +136,6 @@ const resolvers = {
         throw new Error(error.message);
       }
     },
-    
   
     returnBook: async (_, { bookId }, { user }) => {
       try {
