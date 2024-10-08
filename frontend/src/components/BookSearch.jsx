@@ -10,12 +10,24 @@ const BookSearch = () => {
   const handleSearch = async () => {
     setLoading(true);
     try {
-      const response = await axios.get('http://localhost:5000/api/books', {
-        params: { search_word: searchWord }
+      const response = await axios.post('http://localhost:4000/graphql', {
+        query: `
+          query {
+            getBooks(searchWord: "${searchWord}") {
+              title
+              author
+              image_url
+              description
+            }
+          }
+        `
       });
-      console.log("Books data received:", response.data);  // ここでデータが正しく渡されているか確認
-      if (response.data && Array.isArray(response.data)) {
-        setBooks(response.data);
+
+      console.log("Books data received:", response.data);  // デバッグ用ログ
+
+      // GraphQLのレスポンスからデータを取得
+      if (response.data && response.data.data && Array.isArray(response.data.data.getBooks)) {
+        setBooks(response.data.data.getBooks);
       } else {
         console.error('Unexpected response data:', response.data);
         setBooks([]);
@@ -27,12 +39,11 @@ const BookSearch = () => {
       setLoading(false);
     }
   };
-  
-  
+
   const handleAddBook = async (book) => {
     try {
       const { title, author, isbn, image_url, description } = book;
-      
+
       // ローカルストレージからトークンを取得
       const token = localStorage.getItem('token');
       // console.log("Token:", token);  // トークンが取得できているか確認
@@ -56,12 +67,12 @@ const BookSearch = () => {
           'Authorization': `Bearer ${token}`  // トークンをヘッダーに追加
         }
       });
-  
+
       if (response.data.errors) {
         console.error('Error adding book:', response.data.errors);
         response.data.errors.forEach((error) => {
           console.log('Error details:', error.message);
-      });
+        });
         alert('Failed to add book to your collection.');
       } else {
         alert(`${title} has been added to your collection.`);
@@ -71,14 +82,18 @@ const BookSearch = () => {
       alert('Failed to add book to your collection.');
     }
   };
-  
+
   return (
     <Box maxW="lg" mx="auto" mt="10" p="6" borderWidth="1px" borderRadius="lg" boxShadow="lg">
       <Heading as="h1" size="xl" mb="6" textAlign="center">
         Book Search
       </Heading>
       <VStack spacing="4">
-        <Input placeholder="Search for books..." value={searchWord} onChange={(e) => setSearchWord(e.target.value)} />
+        <Input
+          placeholder="Search for books..."
+          value={searchWord}
+          onChange={(e) => setSearchWord(e.target.value)}
+        />
         <Button colorScheme="teal" onClick={handleSearch}>Search</Button>
       </VStack>
       {loading ? (

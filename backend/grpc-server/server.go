@@ -76,9 +76,9 @@ func (s *server) ReturnBook(ctx context.Context, in *pb.ReturnBookRequest) (*pb.
 }
 
 func main() {
-	// client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI("mongodb://localhost:27017"))
+	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI("mongodb://localhost:27017"))
 	log.Println("Connecting to MongoDB...")
-	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI("mongodb://mongo:27017"))
+	// client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI("mongodb://mongo:27017"))
 	if err != nil {
 		log.Fatal("MongoDB connection failed:", err)
 	}

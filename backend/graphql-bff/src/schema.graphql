@@ -3,7 +3,6 @@ type Mutation {
   rentBook(userId: ID!, bookId: ID!): Book!
   returnBook(bookId: ID!): Book!
   borrowBook(bookId: ID!): Book!
-
 }
 
 type Query {
@@ -11,6 +10,7 @@ type Query {
   book(id: ID!): Book
   availableBooks: [Book!]!
   borrowedBooks: [Book!]!
+  getBooks(searchWord: String!): [Book] # 追加したクエリ
 }
 
 type Book {
@@ -25,6 +25,7 @@ type Book {
   owner: User
   borrower: User
 }
+
 type User {
   id: ID!
   username: String!

@@ -7,10 +7,12 @@ const LoginPage = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
+  const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:4000';
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post('http://localhost:4000/api/login', { username, password });
+       const response = await axios.post(`${apiUrl}/api/login`, { username, password });
+    //  const response = await axios.post(`http://graphql-bff:4000/api/login`, { username, password });
       const token = response.data.token;
       localStorage.setItem('token', token);  
       navigate('/books');
